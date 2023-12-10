@@ -6,7 +6,7 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /authorization-server
 ARG DB_USERNAME
 ARG DB_PASSWORD
-ARG JWT_SECRET
+ARG DB_URL
 COPY --from=build target/*.jar authorization-server.jar
 EXPOSE 9000
 

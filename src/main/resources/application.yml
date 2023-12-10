@@ -14,7 +14,7 @@ spring:
     application:
       name: authorization-server
     datasource:
-        url: jdbc:postgresql://localhost:5432/oauth
+        url: ${DB_URL}
         driver-class-name: org.postgresql.Driver
         username: ${DB_USERNAME}
         password: ${DB_PASSWORD}
