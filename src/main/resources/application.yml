@@ -1,0 +1,22 @@
+server:
+    port: 9000
+
+# shows more information of log of spring security
+logging:
+    level:
+        org:
+            springframework:
+                security: TRACE
+            flyaway: TRACE
+            oauth2: TRACE
+
+spring:
+    application:
+      name: authorization-server
+    datasource:
+        url: jdbc:postgresql://localhost:5432/oauth
+        driver-class-name: org.postgresql.Driver
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+    jpa:
+        show-sql: true
