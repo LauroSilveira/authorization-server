@@ -58,10 +58,10 @@ public class AuthorizationSecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         //Only allows request to endpoint /auth any others has to be authenticated
-        http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/authentication/**", "/client/**")
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
                         .permitAll().anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults());
-        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers( "/authentication/**", "/client/**" ));
+        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers( "/auth/**", "/client/**" ));
         return http.build();
     }
 
