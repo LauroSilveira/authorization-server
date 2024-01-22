@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -60,8 +61,9 @@ public class AuthorizationSecurityConfig {
         //Only allows request to endpoint /auth any others has to be authenticated
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
                         .permitAll().anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
-        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers( "/auth/**", "/client/**" ));
+                .formLogin(Customizer.withDefaults())
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**"));
         return http.build();
     }
 
@@ -100,6 +102,7 @@ public class AuthorizationSecurityConfig {
 
     /**
      * shows Settings of authorization Server by curl
+     *
      * @return AuthorizationServerSettings
      */
     @Bean
@@ -127,25 +130,25 @@ public class AuthorizationSecurityConfig {
     // add roles on th Token
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
-      return context -> {
-          Authentication principal = context.getPrincipal();
-          if(context.getTokenType().getValue().equals("id_token")) {
-              context.getClaims().claim("token_type", "id token");
-          }
-          if (context.getTokenType().getValue().equals("access_token")) {
-              context.getClaims().claim("token_type", "access token");
-              Set<String> roles = principal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                      .collect(Collectors.toSet());
-              context.getClaims().claim("roles", roles).claim("username", principal.getName());
-          }
-      };
+        return context -> {
+            Authentication principal = context.getPrincipal();
+            if (context.getTokenType().getValue().equals("id_token")) {
+                context.getClaims().claim("token_type", "id token");
+            }
+            if (context.getTokenType().getValue().equals("access_token")) {
+                context.getClaims().claim("token_type", "access token");
+                Set<String> roles = principal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toSet());
+                context.getClaims().claim("roles", roles).claim("username", principal.getName());
+            }
+        };
     }
 
     private KeyPair generateKeyPair() throws NoSuchAlgorithmException {
 
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-            generator.initialize(2048);
-            return generator.generateKeyPair();
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
+        return generator.generateKeyPair();
 
     }
 
@@ -158,7 +161,7 @@ public class AuthorizationSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
