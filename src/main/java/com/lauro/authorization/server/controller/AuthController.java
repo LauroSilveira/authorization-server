@@ -24,6 +24,7 @@ public class AuthController {
 
     @PostMapping("/create")
     public ResponseEntity<MessageDto> createUser(@RequestBody final UserDto dto) {
+        log.info("[AuthController request to create new user: {}]", dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(userServiceImpl.createUser(dto));
 
     }
