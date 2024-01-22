@@ -20,3 +20,8 @@ spring:
         password: ${POSTGRES_PASSWORD:Vincere7}
     jpa:
         show-sql: true
+
+authorization:
+    server:
+        settings:
+            name: ${CLIENT_REDIRECT_URL:http://localhost:9000}

@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -35,6 +36,9 @@ import java.util.stream.Collectors;
 @Configuration
 @Slf4j
 public class AuthorizationSecurityConfig {
+
+    @Value("${authorization.server.settings.name}")
+    private String issuer;
 
     @Bean
     @Order(1)
@@ -99,7 +103,7 @@ public class AuthorizationSecurityConfig {
      */
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().issuer("http://localhost:9000").build();
+        return AuthorizationServerSettings.builder().issuer(issuer).build();
     }
 
     @Bean
