@@ -61,8 +61,7 @@ public class AuthorizationSecurityConfig {
         //Only allows request to endpoint /auth any others has to be authenticated
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
                         .permitAll().anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .formLogin(Customizer.withDefaults());
         http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**"));
         return http.build();
     }
