@@ -24,4 +24,4 @@ spring:
 authorization:
     server:
         settings:
-            name: ${CLIENT_REDIRECT_URL:http://localhost:9000}
+            name: ${AUTHORIZATION_SERVER_URL:http://localhost:9000}
