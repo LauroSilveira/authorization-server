@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
@@ -57,7 +58,7 @@ public class AuthorizationSecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         //Only allows request to endpoint /auth any others has to be authenticated
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
+        http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/auth/**", "/client/**")
                         .permitAll().anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults());
         http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers( "/auth/**", "/client/**" ));
