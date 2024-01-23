@@ -69,7 +69,7 @@ public class AuthorizationSecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .formLogin(Customizer.withDefaults());
-        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**"));
+        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**", "/resource-server-production.up.railway.app/**"));
         return http.build();
     }
 
