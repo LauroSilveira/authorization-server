@@ -25,6 +25,8 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -61,6 +63,8 @@ public class AuthorizationSecurityConfig {
         //Only allows request to endpoint /auth any others has to be authenticated
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
                         .permitAll().anyRequest().authenticated())
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .formLogin(Customizer.withDefaults());
         http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**"));
         return http.build();
