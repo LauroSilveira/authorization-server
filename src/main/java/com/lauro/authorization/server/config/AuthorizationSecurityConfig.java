@@ -26,11 +26,10 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-<<<<<<< HEAD
-=======
+
+
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
->>>>>>> 807cdad (Added csrfTokenRepository and csrfTokenRequestHandler to use Token from header)
+
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
