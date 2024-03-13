@@ -14,10 +14,10 @@ spring:
     application:
       name: authorization-server
     datasource:
-        url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/oauth}
+        url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/auth_server}
         driver-class-name: org.postgresql.Driver
-        username: ${POSTGRES_USER:laurocorreia}
-        password: ${POSTGRES_PASSWORD:Vincere7}
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:postgres}
     jpa:
         show-sql: true
 
