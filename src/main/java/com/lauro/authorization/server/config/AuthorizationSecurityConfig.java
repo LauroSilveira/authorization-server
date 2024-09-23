@@ -73,39 +73,6 @@ public class AuthorizationSecurityConfig {
         return http.build();
     }
 
-    /*    @Bean
-    public UserDetailsService userDetailsService() {
-        final var userDetails = AppUser.withUsername("user")
-                .password("{noop}user")
-                .authorities("USER")
-                .build();
-        return new InMemoryUserDetailsManager(userDetails);
-    }*/
-
-/*    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("client")
-                .clientSecret(this.passwordEncoder().encode("secret"))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("https://oauthdebugger.com/debug")
-                .scope(OidcScopes.OPENID)
-                .clientSettings(ClientSettings.builder().requireProofKey(true).build())
-                .build();
-
-        return new InMemoryRegisteredClientRepository(registeredClient);
-
-        @Bean
-    public ClientSettings clientSettings() {
-        return ClientSettings.builder().requireProofKey(true).build();
-    }
-
-    }*/
-
-
     /**
      * shows Settings of authorization Server by curl
      *
