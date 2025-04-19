@@ -46,25 +46,35 @@ public class AuthorizationSecurityConfig {
     @Order(1)
     public SecurityFilterChain authSecurityFilterChain(final HttpSecurity http) throws Exception {
 
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());
-        http.exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+        //OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        final var authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer.authorizationServer();
+        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .with(authorizationServerConfigurer, authorizationServer ->
+                        authorizationServer.oidc(Customizer.withDefaults()))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(
+                        new LoginUrlAuthenticationEntryPoint("/login"))).oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(Customizer.withDefaults()));
+
+//        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+//                .oidc(Customizer.withDefaults());
+//        http.exceptionHandling(exception -> exception
+//                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 
     @Bean
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-        //Only allows request to endpoint /auth any others has to be authenticated
+        //Only allows request to endpoint /auth any others have to be authenticated
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
                         .permitAll().anyRequest().authenticated())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .formLogin(Customizer.withDefaults());
-        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**"));
+        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**", "/ms-payments/**",
+                "/gateway/**", "/ms-order/**"));
         return http.build();
     }
 

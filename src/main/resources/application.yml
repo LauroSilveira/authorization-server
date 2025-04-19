@@ -6,9 +6,9 @@ logging:
     level:
         org:
             springframework:
-                security: TRACE
-            flyaway: TRACE
-            oauth2: TRACE
+                security: DEBUG
+            flyaway: DEBUG
+            oauth2: DEBUG
 
 spring:
     application:
