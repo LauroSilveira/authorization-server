@@ -46,21 +46,12 @@ public class AuthorizationSecurityConfig {
     @Order(1)
     public SecurityFilterChain authSecurityFilterChain(final HttpSecurity http) throws Exception {
 
-        //OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        final var authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer.authorizationServer();
-        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .with(authorizationServerConfigurer, authorizationServer ->
-                        authorizationServer.oidc(Customizer.withDefaults()))
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
-                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(
-                        new LoginUrlAuthenticationEntryPoint("/login"))).oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults()));
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-//        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-//                .oidc(Customizer.withDefaults());
-//        http.exceptionHandling(exception -> exception
-//                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
-//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
+        http.exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 
