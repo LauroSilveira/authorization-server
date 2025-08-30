@@ -1,6 +1,6 @@
 package com.lauro.authorization.server.controller;
 
-import com.lauro.authorization.server.dto.CreateClientDto;
+import com.lauro.authorization.server.dto.CreateClientDTO;
 import com.lauro.authorization.server.dto.MessageDto;
 import com.lauro.authorization.server.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class ClientController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<MessageDto> create(@RequestBody final CreateClientDto dto) {
+    public ResponseEntity<MessageDto> create(@RequestBody final CreateClientDTO dto) {
         log.info("[ClientController request to create new client: {}]", dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.create(dto));
     }

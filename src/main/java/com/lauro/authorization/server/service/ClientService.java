@@ -1,15 +1,19 @@
 package com.lauro.authorization.server.service;
 
-import com.lauro.authorization.server.dto.CreateClientDto;
+import com.lauro.authorization.server.dto.CreateClientDTO;
 import com.lauro.authorization.server.dto.MessageDto;
 import com.lauro.authorization.server.exceptions.RoleException;
 import com.lauro.authorization.server.model.Client;
 import com.lauro.authorization.server.repository.ClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -42,22 +46,11 @@ public class ClientService implements RegisteredClientRepository {
         return Client.toRegisteredClient(client);
     }
 
-    public MessageDto create(CreateClientDto dto) {
-        Client client = this.clientFromDto(dto);
+    public MessageDto create(CreateClientDTO dto) {
+        Client client = dto.clientFromDto(passwordEncoder);
         this.clientRepository.save(client);
         return new MessageDto("Client saved");
     }
 
-    private Client clientFromDto(CreateClientDto dto){
-        return Client.builder()
-                .clientId(dto.getClientId())
-                .clientSecret(this.passwordEncoder.encode(dto.getClientSecret()))
-                .authenticationMethods(dto.getAuthenticationMethods())
-                .authorizationGrantTypes(dto.getAuthorizationGrantTypes())
-                .redirectUris(dto.getRedirectUris())
-                .scopes(dto.getScopes())
-                .requireConsent(dto.isRequireConsent())
-                .clientName(dto.getClientName())
-                .build();
-    }
+
 }
