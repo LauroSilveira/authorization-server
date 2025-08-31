@@ -41,35 +41,6 @@ public class AuthorizationSecurityConfig {
     @Value("${authorization.server.settings.name}")
     private String issuer;
 
-/*
-    Spring version 3.3.4
-    @Bean
-    @Order(1)
-    public SecurityFilterChain authSecurityFilterChain(final HttpSecurity http) throws Exception {
-
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
-        http.exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-        return http.build();
-    }
-
-    @Bean
-    @Order(2)
-    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-        //Only allows request to endpoint /auth any others have to be authenticated
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
-                        .permitAll().anyRequest().authenticated())
-                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
-                .formLogin(Customizer.withDefaults());
-        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**", "/ms-payments/**",
-                "/gateway/**", "/ms-order/**"));
-        return http.build();
-    }*/
-
     /**
      * Filtro para endpoints públicos (/auth/** e /client/**)
      */
