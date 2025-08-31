@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +24,6 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -42,32 +41,36 @@ public class AuthorizationSecurityConfig {
     @Value("${authorization.server.settings.name}")
     private String issuer;
 
+    /**
+     * Filtro para endpoints públicos (/auth/** e /client/**)
+     */
     @Bean
     @Order(1)
-    public SecurityFilterChain authSecurityFilterChain(final HttpSecurity http) throws Exception {
-
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
-        http.exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/auth/**", "/client/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable); // Se precisar CSRF, adapte aqui
         return http.build();
     }
 
+    /**
+     * Filtro para o Authorization Server (OIDC + OAuth2)
+     */
     @Bean
     @Order(2)
-    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-        //Only allows request to endpoint /auth any others have to be authenticated
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/client/**")
-                        .permitAll().anyRequest().authenticated())
-                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
-                .formLogin(Customizer.withDefaults());
-        http.csrf(csrfConfigurer -> csrfConfigurer.ignoringRequestMatchers("/auth/**", "/client/**", "/ms-payments/**",
-                "/gateway/**", "/ms-order/**"));
+    public SecurityFilterChain authSecurityFilterChain(final HttpSecurity http) throws Exception {
+        final var oAuth2AuthorizationServerConfigurer = OAuth2AuthorizationServerConfigurer.authorizationServer();
+
+        http.securityMatcher(oAuth2AuthorizationServerConfigurer.getEndpointsMatcher())
+                .with(oAuth2AuthorizationServerConfigurer, authorizationServer ->
+                        authorizationServer.oidc(Customizer.withDefaults()))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+
         return http.build();
     }
+
 
     /**
      * shows Settings of authorization Server by curl
